@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NKB</title>
+
+    <script type="text/javascript" src="/apps/2.0p5/sdk.js"></script>
+
+    <script type="text/javascript">
+        Rally.onReady(function() {
+            (function () {
+                var Ext = window.parent.Ext4 || window.parent.Ext;
+                var Extc = window.Ext4 || window.Ext;
+                var Rally = window.parent.Rally;
+            
+                Ext.define('Rally.hack.Bootstrapper', {
+                    singleton: true,
+            
+                    _addSdkHeaders: function (headers) {
+                        Ext.Object.each(this.appInfo, function (key, value) {
+                            headers['X-RallyIntegration' + Ext.String.capitalize(key)] = value;
+                        });
+                    },
+            
+                    _wireIoHeaderHandlers: function () {
+                        var headers = {};
+                        this._addSdkHeaders(headers);
+                        Rally.data.WsapiRestProxy.prototype.headers = headers;
+                    },
+            
+                    launchApp: function (viewport, queryParams) {
+                        this.viewport = viewport;
+                        this.dom = viewport;
+                        this.queryParams = queryParams;
+
+                        this.appInfo = {
+                            name: "Kanban Timebox"
+                        };
+            
+                        var me = this;
+                        console.log("Launching App...");
+                        //this.onReady(function () {
+                            me._loadTimeboxScope(function (timeboxRecord) {
+                                console.log("Loaded Timebox", timeboxRecord);
+                                me._loadAppSettings(function (settings) {
+                                    console.log("Loaded App Settings", settings);
+                                    me._launchAppInViewport("window.parent.Rally.apps.kanban.KanabnApp", settings, timeboxRecord);
+                                });
+                            });
+                        //});
+                    },
+            
+                    _launchAppInViewport: function (className, settings, timeboxRecord) {
+                        this._wireIoHeaderHandlers();
+                        console.log("Launching In Viewport");
+                        //Ext.suspendLayouts();
+                        this.app = this._createApp(
+                            className, 
+                            //settings,
+                            Ext.apply(settings, { 
+                              //renderTo: this.dom, autoRender: true 
+                              id: "kbtb",
+                              el: Extc.get(window.document.body).createChild({
+                                tag: 'div',
+                                id: "kbtb"
+                              }),
+                              container: Extc.get(window.document.body)
+
+                            }),
+                            timeboxRecord);
+            
+
+                        this.app.id = "kbtb";
+                        this.app.el = Extc.get(window.document.body).createChild({
+                          tag: 'div',
+                          id: "kbtb"
+                        });
+                        this.app.container = Extc.get(window.document.body);
+
+                        console.log("The App");
+                        console.dir(this.app);
+                        //this.viewport.add(this.app);
+                        //Ext.resumeLayouts(true);
+                       this.app.render(this.dom);
+                    },
+            
+                    _loadAppSettings: function (callback) {
+                        var appId = this._findAppID();
+                        if (appId) {
+                            Rally.data.PreferenceManager.load({
+                                appID: appId,
+                                project: null,
+                                workspace: null,
+                                success: function (appSettings) {
+                                    callback(appSettings);
+                                },
+                                scope: this
+                            });
+                        } else {
+                            callback({});
+                        }
+                    },
+
+                    _loadTimeboxScope: function (callback) {
+                        var sdkInfo = this.getSdkInfo();
+                        if (sdkInfo.timebox) {
+                            var type = Rally.util.Ref.getTypeFromRef(sdkInfo.timebox);
+                            Rally.data.ModelFactory.getModel({
+                                context: Rally.environment.getContext().getDataContext(),
+                                type: type,
+                                success: function (timeboxModel) {
+                                    timeboxModel.load(Rally.util.Ref.getOidFromRef(sdkInfo.timebox), {
+                                        success: callback
+                                    });
+                                }
+                            });
+                        } else {
+                            callback();
+                        }
+                    },
+
+                    _createApp: function (className, settings, timeboxRecord) {
+                        console.log("The settings")
+                        console.dir(settings);
+                        var ret = Ext.create(Rally.apps.kanban.KanbanApp, {
+                            context: this._buildAppContext(timeboxRecord),
+                            settings: settings
+                        });
+
+                        ret.setLoading = Ext.emptyFn;
+                        return ret;
+                    },
+
+                    _buildAppContext: function (timeboxRecord) {
+                        var context = Rally.environment.getContext(),
+                            appID = this._findAppID();
+
+                        this.appStatePrefix = Rally.state.SessionStorageProvider.APP_PREFIX + appID + '-' + context.getUser().ObjectID + '-';
+                        Rally.state.SessionStorage.initialize(this.appStatePrefix);
+
+                        return Ext.create('Rally.app.Context', {
+                            initialValues: {
+                                workspace: context.getWorkspace(),
+                                project: context.getProject(),
+                                projectScopeUp: context.getProjectScopeUp(),
+                                projectScopeDown: context.getProjectScopeDown(),
+                                appID: appID,
+                                user: context.getUser(),
+                                subscription: context.getSubscription(),
+                                timebox: timeboxRecord
+                            }
+                        });
+                    },
+
+                    _findAppID: function () {
+                      return this.queryParams.panelOid;
+                    },
+            
+                    getSdkInfo: function () {
+                        // The info is a magic string replace by the builder. Be careful changing it
+                        var info = Ext.apply({
+                            wsapiVersion: '' || '1.40',
+                            lookbackVersion: '' || 'v2.0',
+                            sdkVersion: '' || 'x'
+                        }, this.queryParams);
+            
+                        return info;
+                    }
+            
+                });
+            })();
+            
+            (function() {
+                var Ext = window.Ext4 || window.Ext;
+            
+                var rly = window.parent.Rally;
+            
+                console.log(rly.hack.Bootstrapper);
+                var queryParams = Ext.Object.fromQueryString(window.location.search);
+                var appId = queryParams.panelOid;
+            
+                var body = window.document.body;
+                window.parent.Rally.hack.Bootstrapper.launchApp(body, queryParams);
+
+            }());
+
+        });
+    </script>
+
+    <style type="text/css">
+        .kanban .show-label {
+            margin-top: 3px;
+            float: right;
+        }
+        
+        .kanban .right table {
+            float: right;
+        }
+        
+        .kanban .right table label {
+            margin-top: 3px;
+        }
+        
+        .kanban .checkbox {
+            margin: 5px;
+        }
+        
+        .kanban .right .filterInfo {
+            float: right;
+            padding-right: 1px;
+            border-right: 1px solid #CCC;
+            margin-right: 5px;
+        }
+        
+        .kanban .rui-notification {
+            float: none;
+            position: absolute;
+            left: 50%;
+            margin-left: -200px;
+            width: 400px;
+        }
+        
+        /*Remove with NO_IE7_COMPAT toggle */
+        .ext-ie .kanban .right .filterInfo {
+            width: 25px;
+        }
+        
+        /*Remove with NO_IE7_COMPAT toggle */
+        .ext-ie .kanban .right .artifact-type-chooser {
+            width: 265px;
+        }
+        
+        .cardboard .status-content > .status-field.RevisionHistory {
+            line-height: 18px;
+            cursor: default;
+        }
+        
+        .column-settings .settings-grid {
+            border: 1px solid #FFF;
+        }
+        
+        .column-settings .settings-grid.rally-invalid-field {
+            border: 1px solid #F00;
+        }    </style>
+</head>
+<body></body>
+</html>

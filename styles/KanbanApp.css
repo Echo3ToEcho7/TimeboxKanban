@@ -1,0 +1,54 @@
+.kanban .show-label {
+    margin-top: 3px;
+    float: right;
+}
+
+.kanban .right table {
+    float: right;
+}
+
+.kanban .right table label {
+    margin-top: 3px;
+}
+
+.kanban .checkbox {
+    margin: 5px;
+}
+
+.kanban .right .filterInfo {
+    float: right;
+    padding-right: 1px;
+    border-right: 1px solid #CCC;
+    margin-right: 5px;
+}
+
+.kanban .rui-notification {
+    float: none;
+    position: absolute;
+    left: 50%;
+    margin-left: -200px;
+    width: 400px;
+}
+
+/*Remove with NO_IE7_COMPAT toggle */
+.ext-ie .kanban .right .filterInfo {
+    width: 25px;
+}
+
+/*Remove with NO_IE7_COMPAT toggle */
+.ext-ie .kanban .right .artifact-type-chooser {
+    width: 265px;
+}
+
+.cardboard .status-content > .status-field.RevisionHistory {
+    line-height: 18px;
+    cursor: default;
+}
+
+.column-settings .settings-grid {
+    border: 1px solid #FFF;
+}
+
+.column-settings .settings-grid.rally-invalid-field {
+    border: 1px solid #F00;
+}

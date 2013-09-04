@@ -1,0 +1,70 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'login' ]
+2 info using npm@1.1.32
+3 info using node@v0.8.0
+4 verbose config file /Users/cobrien/.npmrc
+5 verbose config file /usr/local/etc/npmrc
+6 verbose config file /usr/local/lib/node_modules/npm/npmrc
+7 verbose adduser before first PUT { name: 'cobrien@rallydev.com',
+7 verbose adduser   salt: 'b7a723ee-e15e-4f45-99b7-f7830d7a17d5',
+7 verbose adduser   password_sha: '7978f3aafc1b0f88bcd94243ad0401b282d3f121',
+7 verbose adduser   email: 'cobrien@rallydev.com',
+7 verbose adduser   _id: 'org.couchdb.user:cobrien@rallydev.com',
+7 verbose adduser   type: 'user',
+7 verbose adduser   roles: [],
+7 verbose adduser   date: '2013-06-05T03:38:46.300Z' }
+8 verbose url raw /-/user/org.couchdb.user:cobrien%40rallydev.com
+9 verbose url resolving [ 'https://registry.npmjs.org/',
+9 verbose url resolving   './-/user/org.couchdb.user:cobrien%40rallydev.com' ]
+10 verbose url resolved https://registry.npmjs.org/-/user/org.couchdb.user:cobrien%40rallydev.com
+11 http PUT https://registry.npmjs.org/-/user/org.couchdb.user:cobrien%40rallydev.com
+12 http 409 https://registry.npmjs.org/-/user/org.couchdb.user:cobrien%40rallydev.com
+13 verbose adduser update existing user
+14 verbose url raw /-/user/org.couchdb.user:cobrien%40rallydev.com
+15 verbose url resolving [ 'https://registry.npmjs.org/',
+15 verbose url resolving   './-/user/org.couchdb.user:cobrien%40rallydev.com' ]
+16 verbose url resolved https://registry.npmjs.org/-/user/org.couchdb.user:cobrien%40rallydev.com
+17 http GET https://registry.npmjs.org/-/user/org.couchdb.user:cobrien%40rallydev.com
+18 http 200 https://registry.npmjs.org/-/user/org.couchdb.user:cobrien%40rallydev.com
+19 verbose adduser userobj { name: 'cobrien@rallydev.com',
+19 verbose adduser   salt: 'b7a723ee-e15e-4f45-99b7-f7830d7a17d5',
+19 verbose adduser   password_sha: '7978f3aafc1b0f88bcd94243ad0401b282d3f121',
+19 verbose adduser   email: 'cobrien@rallydev.com',
+19 verbose adduser   _id: 'org.couchdb.user:cobrien@rallydev.com',
+19 verbose adduser   type: 'user',
+19 verbose adduser   roles: [],
+19 verbose adduser   date: '2013-06-05T03:38:46.300Z',
+19 verbose adduser   _rev: '2-d88460c368e0aba0164f188684fbcf98',
+19 verbose adduser   _etag: '"2-d88460c368e0aba0164f188684fbcf98"' }
+20 verbose url raw /-/user/org.couchdb.user:cobrien%40rallydev.com/-rev/2-d88460c368e0aba0164f188684fbcf98
+21 verbose url resolving [ 'https://registry.npmjs.org/',
+21 verbose url resolving   './-/user/org.couchdb.user:cobrien%40rallydev.com/-rev/2-d88460c368e0aba0164f188684fbcf98' ]
+22 verbose url resolved https://registry.npmjs.org/-/user/org.couchdb.user:cobrien%40rallydev.com/-rev/2-d88460c368e0aba0164f188684fbcf98
+23 http PUT https://registry.npmjs.org/-/user/org.couchdb.user:cobrien%40rallydev.com/-rev/2-d88460c368e0aba0164f188684fbcf98
+24 http 409 https://registry.npmjs.org/-/user/org.couchdb.user:cobrien%40rallydev.com/-rev/2-d88460c368e0aba0164f188684fbcf98
+25 verbose adduser back [ [Error: conflict Document update conflict.: -/user/org.couchdb.user:cobrien%40rallydev.com/-rev/2-d88460c368e0aba0164f188684fbcf98],
+25 verbose adduser   { error: 'conflict', reason: 'Document update conflict.' },
+25 verbose adduser   '{"error":"conflict","reason":"Document update conflict."}' ]
+26 error Error: conflict Document update conflict.: -/user/org.couchdb.user:cobrien%40rallydev.com/-rev/2-d88460c368e0aba0164f188684fbcf98
+26 error     at RegClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:177:14)
+26 error     at Request.init.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/main.js:119:22)
+26 error     at Request.EventEmitter.emit (events.js:91:17)
+26 error     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/main.js:521:16)
+26 error     at Request.EventEmitter.emit (events.js:88:17)
+26 error     at IncomingMessage.Request.start.self.req.self.httpModule.request.buffer (/usr/local/lib/node_modules/npm/node_modules/request/main.js:483:14)
+26 error     at IncomingMessage.EventEmitter.emit (events.js:115:20)
+26 error     at IncomingMessage._emitEnd (http.js:366:10)
+26 error     at HTTPParser.parserOnMessageComplete [as onMessageComplete] (http.js:149:23)
+26 error     at CleartextStream.socketOnData [as ondata] (http.js:1356:20)
+26 error  [Error: conflict Document update conflict.: -/user/org.couchdb.user:cobrien%40rallydev.com/-rev/2-d88460c368e0aba0164f188684fbcf98]
+27 error You may report this log at:
+27 error     <http://github.com/isaacs/npm/issues>
+27 error or email it to:
+27 error     <npm-@googlegroups.com>
+28 error System Darwin 11.4.2
+29 error command "node" "/usr/local/bin/npm" "login"
+30 error cwd /Users/cobrien/Desktop/NKB
+31 error node -v v0.8.0
+32 error npm -v 1.1.32
+33 error message conflict Document update conflict.: -/user/org.couchdb.user:cobrien%40rallydev.com/-rev/2-d88460c368e0aba0164f188684fbcf98
+34 verbose exit [ 1, true ]
